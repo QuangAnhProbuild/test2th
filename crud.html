@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="styleSheet" href="./styles.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div style="display: flex">
+      <div id="menu">
+        <img src="./assets/images/logo.svg" id="logo" />
+        <p><a href="crud.html">Orders</a></p>
+        <p><a href="login.html">Logout</a></p>
+      </div>
+      <div id="card">
+        <div id="addNewData">
+          <div>
+            <label for="id">ID</label>
+            <input type="number" id="id" />
+          </div>
+          <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" />
+          </div>
+          <div>
+            <label for="description">Description</label>
+            <input type="text" id="description" />
+          </div>
+          <div>
+            <button onclick="add()">Thêm vào bảng</button>
+          </div>
+        </div>
+        <div id="search">
+          <input type="date" />
+          <input type="text" placeholder="search name" />
+        </div>
+        <table id="tableHead">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="render"></tbody>
+        </table>
+      </div>
+    </div>
+    <script>
+      let dataTable = [];
+      function add() {
+        var itemId = document.getElementById("id").value;
+        var itemName = document.getElementById("name").value;
+        var itemDescription = document.getElementById("description").value;
+
+        var objData = {
+          id: itemId,
+          name: itemName,
+          description: itemDescription,
+        };
+        let index = dataTable.findIndex((e) => e.id === objData.id);
+        if (index >= 0) {
+          dataTable.splice(index, 1, objData);
+          document.getElementById("id").value = "";
+          document.getElementById("name").value = "";
+          document.getElementById("description").value = "";
+        } else if (
+          dataTable.find((e) => e.id === itemId) ||
+          !itemId ||
+          itemId === ""
+        ) {
+          return alert("id không phù hợp");
+        } else {
+          dataTable.push(objData);
+          document.getElementById("id").value = "";
+          document.getElementById("name").value = "";
+          document.getElementById("description").value = "";
+        }
+        render();
+      }
+
+      function render() {
+        table = ``;
+        for (let i = 0; i < dataTable.length; i++) {
+          table += `<tr>
+          <td>${dataTable[i].id}</td>  
+          <td>${dataTable[i].name}</td>  
+          <td>${dataTable[i].description}</td>
+          <td><div id='flexButton'>
+            <img src='./assets/images/edit.svg' onclick="editItem(${dataTable[i].id})"/>
+            <img src='./assets/images/trash.svg' onclick="deleteItem(${dataTable[i].id})"/>
+            </div></td>
+        </tr>`;
+        }
+        document.getElementById("render").innerHTML = table;
+      }
+
+      function deleteItem(id) {
+        for (let i = 0; i < dataTable.length; i++) {
+          if (dataTable[i].id == id) {
+            dataTable.splice(i, 1);
+            render();
+          }
+        }
+      }
+
+      function editItem(id) {
+        let objData = dataTable.find((e) => e.id === id.toString());
+        if (objData) {
+          document.getElementById("id").value = objData.id;
+          document.getElementById("name").value = objData.name;
+          document.getElementById("description").value = objData.description;
+        }
+      }
+    </script>
+  </body>
+</html>
